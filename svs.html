@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Next-Day Vitality — Study 3</title>
+<style>
+:root{
+  --bg:#0b1022;--card:#111827;--border:#1e293b;
+  --ink:#e2e8f0;--muted:#64748b;--dim:#94a3b8;
+  --accent:#38bdf8;--green:#22c55e;--red:#ef4444;--r:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:linear-gradient(160deg,#0a0e1c,#0b1226 60%,#080d1a);
+  color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;align-items:center;
+  padding:32px 16px 60px;
+}
+.container{width:100%;max-width:540px}
+.title-block{text-align:center;margin-bottom:28px}
+.title-block h1{font-size:24px;font-weight:800;color:var(--accent);margin-bottom:6px}
+.title-block p{font-size:13px;color:var(--dim);line-height:1.6}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:24px;box-shadow:0 4px 24px rgba(0,0,0,.3);margin-bottom:16px}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.section-label::before{content:'';width:3px;height:12px;background:var(--accent);border-radius:2px}
+.form-row{margin-bottom:14px}
+label.fl{display:block;font-size:13px;font-weight:600;color:var(--dim);margin-bottom:6px}
+input[type=text],input[type=number]{
+  width:100%;padding:10px 14px;border-radius:8px;
+  border:1px solid var(--border);background:#0f172a;color:var(--ink);
+  font-size:15px;font-family:inherit;transition:border-color .2s;
+}
+input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(56,189,248,.12)}
+.info-box{padding:12px 16px;border-left:3px solid var(--accent);
+  background:rgba(56,189,248,.06);border-radius:0 8px 8px 0;
+  font-size:13px;color:var(--dim);margin-bottom:20px;line-height:1.5}
+.slider-wrap{padding:14px 16px;background:rgba(255,255,255,.025);
+  border:1px solid var(--border);border-radius:10px;margin-bottom:10px;
+  transition:border-color .2s}
+.slider-wrap:hover{border-color:rgba(56,189,248,.3)}
+.slider-q{font-size:13.5px;color:var(--ink);margin-bottom:10px;line-height:1.45}
+.slider-controls{display:flex;align-items:center;gap:10px}
+.slider-controls input[type=range]{flex:1;accent-color:var(--accent);height:6px;cursor:pointer}
+.slider-val{min-width:38px;text-align:center;font-size:16px;font-weight:800;
+  color:var(--accent);background:rgba(56,189,248,.1);border-radius:6px;padding:3px 8px}
+.slider-labels{display:flex;justify-content:space-between;
+  font-size:10.5px;color:var(--muted);margin-top:5px}
+.rev-badge{display:inline-block;font-size:9.5px;font-weight:700;padding:1px 7px;
+  border-radius:99px;background:rgba(245,158,11,.12);color:#f59e0b;
+  border:1px solid rgba(245,158,11,.25);margin-left:8px;vertical-align:middle}
+.btn{width:100%;padding:14px;border:none;border-radius:10px;
+  background:var(--accent);color:#00141a;font-size:15px;font-weight:800;
+  cursor:pointer;margin-top:20px;font-family:inherit;
+  transition:filter .15s,opacity .15s;display:flex;align-items:center;
+  justify-content:center;gap:8px}
+.btn:hover:not(:disabled){filter:brightness(1.1)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.spinner{width:18px;height:18px;border:2px solid rgba(0,20,26,.3);
+  border-top-color:#00141a;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Status states */
+.status-card{display:none;padding:24px;border-radius:var(--r);text-align:center;margin-bottom:16px}
+.status-card.success{background:rgba(34,197,94,.06);border:1px solid var(--green)}
+.status-card.error{background:rgba(239,68,68,.06);border:1px solid var(--red)}
+.status-card h2{font-size:20px;font-weight:800;margin-bottom:8px}
+.status-card.success h2{color:var(--green)}
+.status-card.error h2{color:var(--red)}
+.status-card p{font-size:13px;color:var(--dim);line-height:1.5}
+.score-big{font-size:40px;font-weight:900;color:var(--accent);margin:12px 0}
+.btn-outline{width:100%;padding:11px;border:1px solid var(--border);border-radius:8px;
+  background:transparent;color:var(--dim);font-size:13px;font-weight:700;
+  cursor:pointer;font-family:inherit;margin-top:10px;transition:border-color .2s,color .2s}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="title-block">
+    <h1>Good morning ☀️</h1>
+    <p>Study 3 — Next-Day Vitality Questionnaire<br>
+      Please complete this <strong style="color:var(--ink)">before noon today</strong>. Takes about 2 minutes.</p>
+  </div>
+
+  <!-- Main form card -->
+  <div class="card" id="main-card">
+    <div class="section-label">Your Details</div>
+
+    <div class="form-row">
+      <label class="fl" for="svs-pid">Participant ID</label>
+      <input type="number" id="svs-pid" min="1" placeholder="Enter your participant number">
+    </div>
+    <div class="form-row">
+      <label class="fl" for="svs-session">Session Number</label>
+      <input type="number" id="svs-session" min="1" max="2" placeholder="1 or 2">
+    </div>
+
+    <div class="info-box">
+      Think about how you feel <strong style="color:var(--ink)">right now, this morning</strong>,
+      and rate each statement below.
+    </div>
+
+    <div class="section-label">
+      Subjective Vitality Scale
+      <span style="font-size:10px;color:var(--muted);font-weight:400;
+        text-transform:none;letter-spacing:0">1 = Not at all true &nbsp;·&nbsp; 7 = Very true</span>
+    </div>
+
+    <div id="svs-items"></div>
+
+    <button class="btn" id="submit-btn" onclick="submitSVS()">
+      Submit
+    </button>
+  </div>
+
+  <!-- Success card -->
+  <div class="status-card success" id="success-card">
+    <h2>Thank you! 🎉</h2>
+    <p>Your response has been recorded.</p>
+    <div class="score-big" id="svs-score-display">—</div>
+    <p style="font-size:12px;color:var(--muted)">SVS mean score (1–7)</p>
+    <button class="btn-outline" onclick="downloadLocalCSV()">↓ Download my response (backup)</button>
+  </div>
+
+  <!-- Error card -->
+  <div class="status-card error" id="error-card">
+    <h2>Submission issue</h2>
+    <p id="error-msg">Could not connect to the server. Please try again or notify the researcher.</p>
+    <button class="btn-outline" onclick="retryOrDownload()">↓ Download CSV instead</button>
+  </div>
+
+</div>
+
+<script>
+// ================================================================
+// ⚙️  SUPABASE CONFIG — fill in your own values
+//     Get these from: Supabase → Project Settings → API
+// ================================================================
+const SUPABASE_URL    = 'https://YOUR_PROJECT_ID.supabase.co';
+const SUPABASE_ANON   = 'YOUR_ANON_PUBLIC_KEY';
+const SUPABASE_TABLE  = 'svs_responses';   // table name in Supabase
+// ================================================================
+
+const SVS_ITEMS = [
+  { id:'svs1', text:'I feel alive and vital.',                          rev:false },
+  { id:'svs2', text:"I don't feel very energetic.",                     rev:true  },
+  { id:'svs3', text:'Sometimes I feel so alive I just want to burst.',  rev:false },
+  { id:'svs4', text:'I have energy and spirit.',                        rev:false },
+  { id:'svs5', text:'I look forward to each new day.',                  rev:false },
+  { id:'svs6', text:'I nearly always feel alert and awake.',            rev:false },
+  { id:'svs7', text:'I feel energised.',                                rev:false },
+];
+
+let latestData = null;
+
+// ── Render sliders ────────────────────────────────────────────
+function renderItems() {
+  const c = document.getElementById('svs-items');
+  c.innerHTML = SVS_ITEMS.map(item => `
+    <div class="slider-wrap">
+      <div class="slider-q">
+        ${item.text}
+        ${item.rev ? '<span class="rev-badge">reverse-scored</span>' : ''}
+      </div>
+      <div class="slider-controls">
+        <input type="range" id="${item.id}" min="1" max="7" value="4"
+          oninput="document.getElementById('${item.id}_out').textContent=this.value">
+        <div class="slider-val" id="${item.id}_out">4</div>
+      </div>
+      <div class="slider-labels">
+        <span>1 — Not at all true</span>
+        <span>7 — Very true</span>
+      </div>
+    </div>`).join('');
+}
+
+// ── Collect & score ───────────────────────────────────────────
+function collectData() {
+  const pid     = document.getElementById('svs-pid').value.trim();
+  const session = document.getElementById('svs-session').value.trim();
+  if (!pid)     { alert('Please enter your Participant ID.');  return null; }
+  if (!session) { alert('Please enter the Session number (1 or 2).'); return null; }
+
+  const rawScores = SVS_ITEMS.map(item => +document.getElementById(item.id).value);
+  const scored    = SVS_ITEMS.map((item,i) => item.rev ? (8 - rawScores[i]) : rawScores[i]);
+  const svsMean   = +(scored.reduce((a,b)=>a+b,0)/scored.length).toFixed(3);
+
+  return {
+    pid, session: +session,
+    timestamp: new Date().toISOString(),
+    svs1_raw:rawScores[0], svs2_raw:rawScores[1], svs3_raw:rawScores[2],
+    svs4_raw:rawScores[3], svs5_raw:rawScores[4], svs6_raw:rawScores[5], svs7_raw:rawScores[6],
+    svs1_scored:scored[0], svs2_scored:scored[1], svs3_scored:scored[2],
+    svs4_scored:scored[3], svs5_scored:scored[4], svs6_scored:scored[5], svs7_scored:scored[6],
+    svs_mean: svsMean,
+  };
+}
+
+// ── Submit to Supabase ────────────────────────────────────────
+async function submitSVS() {
+  const data = collectData();
+  if (!data) return;
+  latestData = data;
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Submitting…';
+
+  // Check if Supabase is configured
+  if (SUPABASE_URL.includes('YOUR_PROJECT_ID')) {
+    // Dev/local mode: just download CSV
+    console.warn('Supabase not configured — falling back to CSV download.');
+    showSuccess(data);
+    downloadLocalCSV();
+    return;
+  }
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
+      method:  'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'apikey':        SUPABASE_ANON,
+        'Authorization': `Bearer ${SUPABASE_ANON}`,
+        'Prefer':        'return=minimal',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (res.ok || res.status === 201) {
+      showSuccess(data);
+    } else {
+      const err = await res.text();
+      throw new Error(`HTTP ${res.status}: ${err}`);
+    }
+  } catch(e) {
+    console.error('Supabase submit failed:', e);
+    showError(`${e.message} — You can download a local backup below.`);
+    btn.disabled = false;
+    btn.innerHTML = 'Try again';
+  }
+}
+
+function showSuccess(data) {
+  document.getElementById('main-card').style.display      = 'none';
+  document.getElementById('success-card').style.display   = 'block';
+  document.getElementById('svs-score-display').textContent = data.svs_mean;
+}
+
+function showError(msg) {
+  document.getElementById('error-card').style.display = 'block';
+  document.getElementById('error-msg').textContent    = msg;
+}
+
+function retryOrDownload() {
+  if (latestData) downloadLocalCSV();
+  else alert('No data to download. Please complete the form first.');
+}
+
+// ── Local CSV backup ──────────────────────────────────────────
+function downloadLocalCSV() {
+  if (!latestData) return;
+  const hdrs = Object.keys(latestData);
+  const row  = hdrs.map(h => {
+    const v = String(latestData[h]??'').replace(/"/g,'""');
+    return /[,"\n]/.test(v) ? `"${v}"` : v;
+  }).join(',');
+  const blob = new Blob([hdrs.join(',') + '\n' + row], {type:'text/csv;charset=utf-8;'});
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = `SVS_P${latestData.pid}_S${latestData.session}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+renderItems();
+</script>
+</body>
+</html>
